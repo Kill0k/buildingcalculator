@@ -1,0 +1,349 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.tabs-container {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tabs-header {
+  display: flex;
+  background-color: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-button:hover {
+  background-color: #efefef;
+  color: #333;
+}
+
+.tab-button.active {
+  background-color: #fff;
+  color: #0066cc;
+  border-bottom-color: #0066cc;
+}
+
+.tab-content {
+  padding: 2rem;
+  background-color: #fff;
+  min-height: 300px;
+  animation: fadeIn 0.3s ease;
+}
+
+.tab-content p {
+  color: #555;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.earthwork-tab {
+  animation: fadeIn 0.3s ease;
+}
+
+.input-group {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+}
+
+.input-field label {
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.input-field input {
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.input-field input:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.area-result {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+  border-radius: 8px;
+  border-left: 4px solid #0066cc;
+  animation: fadeIn 0.3s ease;
+}
+
+.area-result h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.area-result span {
+  color: #0066cc;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.area-result.excavation-result {
+  background: linear-gradient(135deg, #fff3e0 0%, #f3e5f5 100%);
+  border-left-color: #ff9800;
+}
+
+.area-result.excavation-result span {
+  color: #ff9800;
+}
+
+.area-result.excavation-bottom-result {
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1f5fe 100%);
+  border-left-color: #9c27b0;
+}
+
+.area-result.excavation-bottom-result span {
+  color: #9c27b0;
+}
+
+.area-result.excavation-top-result {
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+  border-left-color: #4caf50;
+}
+
+.area-result.excavation-top-result span {
+  color: #4caf50;
+}
+
+.area-result.excavation-volume-result {
+  background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+  border-left-color: #e91e63;
+}
+
+.area-result.excavation-volume-result span {
+  color: #e91e63;
+}
+
+.area-result.excavation-mass-result {
+  background: linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%);
+  border-left-color: #ff6f00;
+}
+
+.area-result.excavation-mass-result span {
+  color: #ff6f00;
+}
+
+.area-result.excavation-labor-result {
+  background: linear-gradient(135deg, #ede7f6 0%, #f1f8e9 100%);
+  border-left-color: #7b1fa2;
+}
+
+.area-result.excavation-labor-result span {
+  color: #7b1fa2;
+}
+
+.calculation-info {
+  margin-top: 1rem;
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.earthwork-tab h2 {
+  color: #333;
+  font-size: 1.3rem;
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+}
+
+.soil-select {
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.soil-select:hover {
+  border-color: #0066cc;
+}
+
+.soil-select:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.soil-properties {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  animation: fadeIn 0.3s ease;
+}
+
+.soil-properties h3 {
+  color: #333;
+  font-size: 1.2rem;
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+}
+
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.property-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  border-left: 4px solid #0066cc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.property-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.property-value {
+  font-size: 1.1rem;
+  color: #0066cc;
+  font-weight: 700;
+}
+
+.soil-type-selector {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+}
+
+.soil-type-selector > label {
+  display: block;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.radio-label:hover {
+  background-color: #f0f0f0;
+}
+
+.radio-input {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: #0066cc;
+}
+
+.radio-text {
+  font-weight: 500;
+  color: #333;
+  font-size: 1rem;
+  user-select: none;
+}
+
+.mechanization-block {
+  margin: 2rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 12px;
+  border: 2px solid #0066cc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.area-result ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  list-style-type: none;
+}
+
+.area-result ul li {
+  padding: 0.3rem 0;
+  font-size: 0.95rem;
+}
+
+.foundation-form {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.foundation-form h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.2rem;
+}
