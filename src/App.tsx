@@ -19,12 +19,18 @@ function App() {
   const [selectedWorkMethod, setSelectedWorkMethod] = useState('TransportLoading')
   // ConcreteTab states
   const [foundationAboveGroundConcrete, setFoundationAboveGroundConcrete] = useState('')
-  const [foundations, setFoundations] = useState([{ length: '', width: '' }])
+  const [foundations, setFoundations] = useState([{ length: '', width: '', longitudinalReinforcement: '', transverseReinforcement: '', longitudinalStep: '', transverseStep: '' }])
+  const [craneBucketWeight, setCraneBucketWeight] = useState('3')
+  const [craneRiggingWeight, setCraneRiggingWeight] = useState('0.05')
+  const [craneHeightReserve, setCraneHeightReserve] = useState('0.5')
+  const [craneElementHeight, setCraneElementHeight] = useState('3.5')
+  const [craneStrappingHeight, setCraneStrappingHeight] = useState('5')
+  const [craneAxisDistance, setCraneAxisDistance] = useState('0')
 
-  const addFoundation = () => setFoundations([...foundations, { length: '', width: '' }])
+  const addFoundation = () => setFoundations([...foundations, { length: '', width: '', longitudinalReinforcement: '', transverseReinforcement: '', longitudinalStep: '', transverseStep: '' }])
   const removeFoundation = (index: number) =>
     setFoundations(foundations.filter((_, i) => i !== index))
-  const updateFoundation = (index: number, field: 'length' | 'width', value: string) =>
+  const updateFoundation = (index: number, field: 'length' | 'width' | 'longitudinalReinforcement' | 'transverseReinforcement' | 'longitudinalStep' | 'transverseStep', value: string) =>
     setFoundations(foundations.map((f, i) => (i === index ? { ...f, [field]: value } : f)))
 
   const handleExcavatorChange = (excavator: string) => {
@@ -73,6 +79,20 @@ function App() {
             addFoundation={addFoundation}
             removeFoundation={removeFoundation}
             updateFoundation={updateFoundation}
+            craneBucketWeight={craneBucketWeight}
+            setCraneBucketWeight={setCraneBucketWeight}
+            craneRiggingWeight={craneRiggingWeight}
+            setCraneRiggingWeight={setCraneRiggingWeight}
+            craneHeightReserve={craneHeightReserve}
+            setCraneHeightReserve={setCraneHeightReserve}
+            craneElementHeight={craneElementHeight}
+            setCraneElementHeight={setCraneElementHeight}
+            craneStrappingHeight={craneStrappingHeight}
+            setCraneStrappingHeight={setCraneStrappingHeight}
+            foundationOffset={foundationOffset}
+            foundationWidth={foundationWidth}
+            craneAxisDistance={craneAxisDistance}
+            setCraneAxisDistance={setCraneAxisDistance}
           />
         )
       case 2:
