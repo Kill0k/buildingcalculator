@@ -3,6 +3,7 @@ import './App.css'
 import { tabs } from './data/constants'
 import EarthworkTab from './components/EarthworkTab'
 import ConcreteTab from './components/ConcreteTab'
+import StoneTab from './components/StoneTab'
 
 function App() {
   const [activeTab, setActiveTab] = useState(0)
@@ -26,6 +27,9 @@ function App() {
   const [craneElementHeight, setCraneElementHeight] = useState('3.5')
   const [craneStrappingHeight, setCraneStrappingHeight] = useState('5')
   const [craneAxisDistance, setCraneAxisDistance] = useState('0')
+  // StoneTab states
+  const [floorHeight, setFloorHeight] = useState('')
+  const [numberOfFloors, setNumberOfFloors] = useState('')
 
   const addFoundation = () => setFoundations([...foundations, { length: '', width: '', longitudinalReinforcement: '', transverseReinforcement: '', longitudinalStep: '', transverseStep: '' }])
   const removeFoundation = (index: number) =>
@@ -96,7 +100,14 @@ function App() {
           />
         )
       case 2:
-        return <p>Інформація про кам'яні роботи</p>
+        return (
+          <StoneTab
+            floorHeight={floorHeight}
+            setFloorHeight={setFloorHeight}
+            numberOfFloors={numberOfFloors}
+            setNumberOfFloors={setNumberOfFloors}
+          />
+        )
       case 3:
         return <p>Інформація про теплоізоляційні роботи</p>
       default:
