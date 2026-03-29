@@ -273,3 +273,50 @@ export const craneData: Record<string, { boomReaches: number[]; capacities: Reco
     },
   },
 }
+
+export const formworkData: Record<string, { panelAreas: string[]; installation: number[]; dismantling: number[]; dismantlingBoards: number[] }> = {
+  'Деревяна': {
+    panelAreas: ['До 1', 'До 2', 'До 2 (3)'],
+    installation: [0.62, 0.51, 0.40],
+    dismantling: [0.15, 0.13, 0.10],
+    dismantlingBoards: [0.19, 0.16, 0.12],
+  },
+  'Деревяно-металева': {
+    panelAreas: ['До 2'],
+    installation: [0.45],
+    dismantling: [0.26],
+    dismantlingBoards: [0.34],
+  },
+}
+
+export const reinforcementMeshData: Record<string, Record<string, (number | null)[]>> = {
+  '16-32': {
+    'Горизонтальна (низ і верх)': [0.42, 0.81, 1.4, 2.1, null],
+    'Вертикальна': [0.79, 1.3, 2.7, 3.4, null],
+    'Похила': [1.0, 2.1, 3.5, 5.3, null],
+  },
+  '33-45': {
+    'Горизонтальна (низ і верх)': [null, null, 1.3, 1.7, 2.4],
+    'Вертикальна': [null, null, 2.1, 3.2, 4.1],
+    'Похила': [null, null, 3.2, 4.7, 6.3],
+  },
+  'Понад 45': {
+    'Горизонтальна (низ і верх)': [null, 0.88, 1.7, 2.6, 3.5],
+    'Вертикальна': [null, null, 1.7, 2.7, 3.8],
+    'Похила': [null, null, 2.2, 3.1, 4.0],
+  },
+}
+
+export const reinforcementMeshMassCategories = [
+  { label: 'До 0.3 т', min: 0, max: 0.3 },
+  { label: 'До 0.6 т', min: 0.3, max: 0.6 },
+  { label: 'До 1 т', min: 0.6, max: 1.0 },
+  { label: 'До 2 т', min: 1.0, max: 2.0 },
+  { label: 'До 3 т', min: 2.0, max: 3.0 },
+]
+
+
+export const concretePoringData: Record<string, number> = {
+  'Стрічкові фундаменти до 600 мм': 0.30,
+  'Стрічкові фундаменти понад 600 мм': 0.23,
+}

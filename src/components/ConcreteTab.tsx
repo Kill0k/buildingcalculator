@@ -1,6 +1,6 @@
 import React from 'react'
 import FoundationForm from './FoundationForm'
-import { rebarMassPerMeter, craneData } from '../data/constants'
+import { rebarMassPerMeter, craneData, formworkData, reinforcementMeshData, reinforcementMeshMassCategories, concretePoringData } from '../data/constants'
 
 interface ConcreteTabProps {
   foundationDepth: string
@@ -49,6 +49,10 @@ const ConcreteTab: React.FC<ConcreteTabProps> = ({
   craneAxisDistance,
   setCraneAxisDistance,
 }) => {
+  const [formworkLabor, setFormworkLabor] = React.useState('0')
+  const [reinforcementLabor, setReinforcementLabor] = React.useState('0')
+  const [concreteLabor, setConcreteLabor] = React.useState('0')
+
   const totalFoundationHeight =
     foundationDepth && foundationAboveGroundConcrete
       ? (parseFloat(foundationDepth) + parseFloat(foundationAboveGroundConcrete)).toFixed(2)
@@ -381,8 +385,335 @@ const ConcreteTab: React.FC<ConcreteTabProps> = ({
       ) : (
         <p>Не знайдено підходящих кранів для заданих параметрів.</p>
       )}
+
+      {/* Formwork Labor Intensity */}
+      <h2 style={{ marginTop: '3rem' }}>Трудомісткість встановлення щитів опалубки</h2>
+      <FormworkLaborCalculator formworkArea={parseFloat(totalFormworkArea || '0')} onLaborChange={setFormworkLabor} />
+
+      {/* Reinforcement Mesh Labor Intensity */}
+      <h2 style={{ marginTop: '3rem' }}>Трудомісткість встановлення арматурних сіток</h2>
+      <ReinforcementMeshLaborCalculator totalRebarMass={parseFloat(totalRebarMass) / 1000} onLaborChange={setReinforcementLabor} />
+
+      {/* Concrete Poring Time */}
+      <h2 style={{ marginTop: '3rem' }}>Норми часу на вкладання бетонної суміші краном</h2>
+      <ConcretePoringCalculator totalConcreteVolume={parseFloat(totalConcreteVolume || '0')} foundationWidth={parseFloat(foundationWidth || '0')} onLaborChange={setConcreteLabor} />
+
+      {/* Salary Calculation */}
+      <h2 style={{ marginTop: '3rem' }}>Розрахунок зарплатні робітників</h2>
+      <SalaryCalculator formworkLabor={formworkLabor} reinforcementLabor={reinforcementLabor} concreteLabor={concreteLabor} />
+    </div>
+  )
+}
+
+interface FormworkLaborCalculatorProps {
+  formworkArea: number
+  onLaborChange: (labor: string) => void
+}
+
+const FormworkLaborCalculator: React.FC<FormworkLaborCalculatorProps> = ({ formworkArea, onLaborChange }) => {
+  const [formworkType, setFormworkType] = React.useState('Деревяна')
+  const [panelAreaIndex, setPanelAreaIndex] = React.useState(0)
+
+  const currentFormwork = formworkData[formworkType]
+  const currentPanelArea = currentFormwork.panelAreas[panelAreaIndex]
+  const installationRate = currentFormwork.installation[panelAreaIndex]
+  const dismantlingRate = currentFormwork.dismantling[panelAreaIndex]
+  const dismantlingBoardsRate = currentFormwork.dismantlingBoards[panelAreaIndex]
+
+  const installationLabor = (formworkArea * installationRate).toFixed(2)
+  const dismantlingLabor = (formworkArea * dismantlingRate).toFixed(2)
+  const dismantlingBoardsLabor = (formworkArea * dismantlingBoardsRate).toFixed(2)
+  const totalLabor = (parseFloat(installationLabor) + parseFloat(dismantlingLabor) + parseFloat(dismantlingBoardsLabor)).toFixed(2)
+
+  React.useEffect(() => {
+    onLaborChange(totalLabor)
+  }, [totalLabor, onLaborChange])
+
+  return (
+    <div className="input-group">
+      <div className="input-field">
+        <label htmlFor="formworkType">Тип опалубки:</label>
+        <select
+          id="formworkType"
+          value={formworkType}
+          onChange={(e) => {
+            setFormworkType(e.target.value)
+            setPanelAreaIndex(0)
+          }}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '4px',
+            border: '1px solid #ddd',
+            fontSize: '1rem',
+          }}
+        >
+          {Object.keys(formworkData).map(type => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="input-field">
+        <label htmlFor="panelArea">Площа щита (м²):</label>
+        <select
+          id="panelArea"
+          value={panelAreaIndex}
+          onChange={(e) => setPanelAreaIndex(parseInt(e.target.value))}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '4px',
+            border: '1px solid #ddd',
+            fontSize: '1rem',
+          }}
+        >
+          {currentFormwork.panelAreas.map((area, index) => (
+            <option key={index} value={index}>
+              {area}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="area-result" style={{ marginTop: '1rem' }}>
+        <h3>Трудомісткість установки щитів опалубки</h3>
+        <p>
+          <strong>Встановлення:</strong> {formworkArea} м² × {installationRate} чол-год/м² = <span>{installationLabor}</span> чол-год
+        </p>
+        <p>
+          <strong>Демонтаж щитів:</strong> {formworkArea} м² × {dismantlingRate} чол-год/м² = <span>{dismantlingLabor}</span> чол-год
+        </p>
+        <p>
+          <strong>Демонтаж дошок:</strong> {formworkArea} м² × {dismantlingBoardsRate} чол-год/м² = <span>{dismantlingBoardsLabor}</span> чол-год
+        </p>
+        <h4 style={{ marginTop: '1rem' }}>
+          <strong>Разом:</strong> <span style={{ fontSize: '1.1em', color: '#2196F3' }}>{totalLabor}</span> чол-год
+        </h4>
+      </div>
+    </div>
+  )
+}
+
+interface ReinforcementMeshLaborCalculatorProps {
+  totalRebarMass: number
+  onLaborChange: (labor: string) => void
+}
+
+const ReinforcementMeshLaborCalculator: React.FC<ReinforcementMeshLaborCalculatorProps> = ({ totalRebarMass, onLaborChange }) => {
+  const [diameterRange, setDiameterRange] = React.useState('16-32')
+  const [meshPosition, setMeshPosition] = React.useState<string>('')
+  const [meshMass, setMeshMass] = React.useState<number>(0)
+
+  const currentMeshData = reinforcementMeshData[diameterRange]
+  const positions = Object.keys(currentMeshData)
+
+  React.useEffect(() => {
+    if (positions.length > 0 && !positions.includes(meshPosition)) {
+      setMeshPosition(positions[0])
+    }
+  }, [diameterRange, positions, meshPosition])
+
+  const positionLabors = currentMeshData[meshPosition] || []
+
+  // Знайти індекс категорії маси
+  const massIndex = reinforcementMeshMassCategories.findIndex(
+    cat => meshMass >= cat.min && meshMass <= cat.max
+  )
+
+  const laborIntensity = massIndex >= 0 ? positionLabors[massIndex] : null
+
+  // Кількість сіток (довжина 2м)
+  const meshCount = Math.ceil(totalRebarMass / (meshMass || 1))
+  const totalLabor = laborIntensity ? (meshCount * laborIntensity).toFixed(2) : '0'
+
+  React.useEffect(() => {
+    onLaborChange(totalLabor)
+  }, [totalLabor, onLaborChange])
+
+  return (
+    <div className="input-group">
+      <div className="input-field">
+        <label htmlFor="diameterRange">Діаметр арматури (мм):</label>
+        <select
+          id="diameterRange"
+          value={diameterRange}
+          onChange={(e) => setDiameterRange(e.target.value)}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '4px',
+            border: '1px solid #ddd',
+            fontSize: '1rem',
+          }}
+        >
+          {Object.keys(reinforcementMeshData).map(range => (
+            <option key={range} value={range}>
+              {range}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="input-field">
+        <label htmlFor="meshPosition">Розташування сітки:</label>
+        <select
+          id="meshPosition"
+          value={meshPosition}
+          onChange={(e) => setMeshPosition(e.target.value)}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '4px',
+            border: '1px solid #ddd',
+            fontSize: '1rem',
+          }}
+        >
+          {positions.map(pos => (
+            <option key={pos} value={pos}>
+              {pos}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="input-field">
+        <label htmlFor="meshMass">Маса однієї сітки (т):</label>
+        <select
+          id="meshMass"
+          value={meshMass}
+          onChange={(e) => setMeshMass(parseFloat(e.target.value))}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '4px',
+            border: '1px solid #ddd',
+            fontSize: '1rem',
+          }}
+        >
+          {reinforcementMeshMassCategories.map((cat, index) => (
+            <option key={index} value={cat.max}>
+              {cat.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="area-result" style={{ marginTop: '1rem' }}>
+        <h3>Трудомісткість встановлення арматурних сіток</h3>
+        <p>
+          <strong>Діаметр арматури:</strong> {diameterRange} мм
+        </p>
+        <p>
+          <strong>Розташування:</strong> {meshPosition}
+        </p>
+        <p>
+          <strong>Маса однієї сітки:</strong> {meshMass} т
+        </p>
+        <p>
+          <strong>Трудомісткість на одну сітку:</strong> {laborIntensity ? laborIntensity : 'Недоступно'} чол-год
+        </p>
+        <p>
+          <strong>Кількість сіток (довжина 2м):</strong> {meshCount} шт
+        </p>
+        <h4 style={{ marginTop: '1rem' }}>
+          <strong>Разом:</strong> <span style={{ fontSize: '1.1em', color: '#2196F3' }}>{totalLabor}</span> чол-год
+        </h4>
+      </div>
     </div>
   )
 }
 
 export default ConcreteTab
+
+interface ConcretePoringCalculatorProps {
+  totalConcreteVolume: number
+  foundationWidth: number
+  onLaborChange: (labor: string) => void
+}
+
+const ConcretePoringCalculator: React.FC<ConcretePoringCalculatorProps> = ({ totalConcreteVolume, foundationWidth, onLaborChange }) => {
+  const standardTime = foundationWidth <= 0.6 ? 0.30 : 0.23
+  const totalTime = (totalConcreteVolume * standardTime).toFixed(2)
+
+  React.useEffect(() => {
+    onLaborChange(totalTime)
+  }, [totalTime, onLaborChange])
+
+  return (
+    <div className="input-group">
+      <div className="area-result" style={{ marginTop: '1rem' }}>
+        <h3>Норми часу на вкладання бетонної суміші краном</h3>
+        <p>
+          <strong>Тип фундаменту:</strong> {foundationWidth <= 0.6 ? 'Стрічкові фундаменти до 600 мм' : 'Стрічкові фундаменти понад 600 мм'}
+        </p>
+        <p>
+          <strong>Ширина фундаменту:</strong> {foundationWidth} м
+        </p>
+        <p>
+          <strong>Норма часу:</strong> {standardTime} чол-год/м³
+        </p>
+        <p>
+          <strong>Час вкладання:</strong> {totalConcreteVolume} м³ × {standardTime} чол-год/м³ = <span>{totalTime}</span> чол-год
+        </p>
+      </div>
+    </div>
+  )
+}
+
+interface SalaryCalculatorProps {
+  formworkLabor: string
+  reinforcementLabor: string
+  concreteLabor: string
+}
+
+const SalaryCalculator: React.FC<SalaryCalculatorProps> = ({ formworkLabor, reinforcementLabor, concreteLabor }) => {
+  const hourlyRate = 300 // середня зарплатня робітників 300 грн/год
+  const craneHourlyRate = 1200 // вартість оренди крану 1200 грн/год
+
+  const totalLabor = (parseFloat(formworkLabor) + parseFloat(reinforcementLabor) + parseFloat(concreteLabor)).toFixed(2)
+  const totalSalary = (parseFloat(totalLabor) * hourlyRate).toFixed(2)
+  const craneRentalCost = (parseFloat(concreteLabor) * craneHourlyRate).toFixed(2)
+
+  return (
+    <div className="input-group">
+      <div className="area-result" style={{ marginTop: '1rem' }}>
+        <h3>Розрахунок зарплатні робітників</h3>
+        <p>
+          <strong>Середня зарплатня:</strong> {hourlyRate} грн/чол-год
+        </p>
+        <p>
+          <strong>Опалубка:</strong> {formworkLabor} чол-год
+        </p>
+        <p>
+          <strong>Арматура:</strong> {reinforcementLabor} чол-год
+        </p>
+        <p>
+          <strong>Бетон:</strong> {concreteLabor} чол-год
+        </p>
+        <p>
+          <strong>Разом трудомісткість:</strong> {totalLabor} чол-год
+        </p>
+        <h4 style={{ marginTop: '1rem' }}>
+          <strong>Загальна зарплатня:</strong> <span style={{ fontSize: '1.1em', color: '#2196F3' }}>{totalSalary} грн</span>
+        </h4>
+        <p className="calculation-info">Формула: трудомісткість × середня зарплатня</p>
+        <p className="calculation-info">
+          {totalLabor} чол-год × {hourlyRate} грн/чол-год = {totalSalary} грн
+        </p>
+
+        <h3 style={{ marginTop: '2rem' }}>Вартість оренди крану</h3>
+        <p>
+          <strong>Вартість оренди крану за годину:</strong> {craneHourlyRate} грн/год
+        </p>
+        <p>
+          <strong>Трудомісткість вкладання бетону:</strong> {concreteLabor} чол-год
+        </p>
+        <h4 style={{ marginTop: '1rem' }}>
+          <strong>Загальна вартість оренди крану:</strong> <span style={{ fontSize: '1.1em', color: '#2196F3' }}>{craneRentalCost} грн</span>
+        </h4>
+        <p className="calculation-info">Формула: трудомісткість бетону × вартість оренди за годину</p>
+        <p className="calculation-info">
+          {concreteLabor} чол-год × {craneHourlyRate} грн/год = {craneRentalCost} грн
+        </p>
+      </div>
+    </div>
+  )
+}
